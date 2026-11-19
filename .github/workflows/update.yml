@@ -9,14 +9,16 @@ on:
     branches: [main]
 
 permissions:
-  contents: write
+  contents: read
+  pages: write
+  id-token: write
 
 concurrency:
-  group: ranking-update
+  group: pages
   cancel-in-progress: false
 
 jobs:
-  update-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -28,30 +30,31 @@ jobs:
           python-version: '3.11'
 
       - name: Fetch rankings
-        # 抓取失败（如上游 API 在 CI 环境 404/风控）时保留仓库已有 data.json，不阻断部署
+        # 抓取失败（上游 API 404/风控）时保留仓库已有 data.json，不阻断部署
         continue-on-error: true
         run: python3 scripts/fetch.py
 
-      - name: Commit data
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data assets
-          if git diff --cached --quiet; then
-            echo "No data changes"
-          else
-            git commit -m "chore: update ranking data [skip ci]"
-            git push
-          fi
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-      - name: Add .nojekyll
-        run: touch .nojekyll
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
-          publish_branch: gh-pages
-          exclude_assets: '.git,.github,scripts,data/cache,data/history'
-          commit_message: "deploy: static ranking pages [skip ci]"
+          path: .   # 静态站根：index.html / style.css / app.js / data / assets / docs
+          exclude: |
+            .git
+            .github
+            scripts
+            data/cache
+            data/history
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
