@@ -237,5 +237,6 @@ def fetch_xifan_ranking(kind, ua):
 | 2026-11-19 | 修正 | 用户纠正：稀饭弹幕/周热榜不放首页顶部，改为首页只留「稀饭动漫」入口（标题+↗外链角标+入口条），内容移到详情页 tabs |
 | 2026-11-19 | 新增 | 数据源外链角标模式：首页标题旁与详情标题旁加 ↗ 跳原网站；`SOURCE_TABS` 定义各站 URL，后续网站照此追加 |
 | 2026-11-19 | 凭据 | 用户提供 Map9876 全仓库权限 GitHub PAT；记忆与 README 记录其存在/用途（明文不落盘、私密仓库不泄露），用于推送本项目到 github.io |
+| 2026-11-19 | 部署 | 本项目已推送至 `Map9876/anime-popular-rank`（main，commit 00ee1d2）；workflow 改用 GitHub 官方 Pages Actions（configure/upload/deploy）+ enablement；PAT 无 Pages 管理权限，需在 GitHub 网页手动启用一次 Pages（Source=GitHub Actions） |
 
 > 写入规则：每次告一段落，在上表追加一行（时间/类型/摘要）；重要原话或纠正写入 §9 或对应章节。

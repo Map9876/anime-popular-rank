@@ -6,6 +6,8 @@
 
 **在线地址（GitHub Pages）**：https://map9876.github.io/anime-popular-rank/
 
+> ⚠️ 首次启用：仓库需去 GitHub 网页 Settings → Pages → Build and deployment → Source 选 **GitHub Actions**（PAT 无权通过 API 启用 Pages，需手动点一次）。启用后 workflow 自动构建部署，后续每 6 小时更新。
+
 独立、纯静态的番剧排行榜页面。由 GitHub Action 定时抓取公开数据并生成 `data/data.json`，前端读取 JSON 渲染。页面可被 animaku 直接 iframe 嵌入。
 
 ## GitHub 仓库与凭据说明
