@@ -1,0 +1,185 @@
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --pink:#fb7299;--ink:#18191c;--sub:#61666d;--mute:#9499a0;
+  --line:#e3e5e7;--chip:#f1f2f3;--bg:#fff;--side:clamp(12px,3.5vw,20px);
+}
+html,body{height:100%;background:#ededed;color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Noto Sans CJK SC","Microsoft YaHei",Roboto,sans-serif;
+  font-size:14px;-webkit-font-smoothing:antialiased}
+#app{position:relative;width:100%;max-width:480px;height:100dvh;margin:0 auto;
+  background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
+a{color:inherit;text-decoration:none}
+
+/* 视图切换 */
+.view{display:none;flex:1;min-height:0;flex-direction:column}
+.view.active{display:flex}
+
+/* 滚动条隐藏 */
+.detail-tabs::-webkit-scrollbar,.card-scroller::-webkit-scrollbar{display:none}
+
+/* 首页滚动区 —— 自适应密度：用 vw/clamp 随屏宽缩放，一屏约 4 组榜单 */
+.home-scroll{flex:1;overflow-y:auto;overscroll-behavior:contain;
+  padding:0 var(--side) 8px}
+.season-row{position:relative;display:flex;align-items:center;gap:clamp(4px,1.5vw,8px);
+  padding:clamp(3px,1vw,6px) 0 2px}
+.season-label{font-size:clamp(10px,2.7vw,12px);color:var(--mute);flex:0 0 auto}
+.season-chips{display:flex;gap:clamp(3px,1.5vw,6px);overflow-x:auto;scrollbar-width:none}
+.season-chips::-webkit-scrollbar{display:none}
+.season-chip{flex:0 0 auto;padding:clamp(2px,1vw,4px) clamp(6px,2.5vw,10px);
+  border-radius:12px;background:var(--chip);font-size:clamp(10px,2.7vw,12px);color:var(--sub)}
+.season-chip.selected{background:var(--pink);color:#fff;font-weight:600}
+.info-btn{flex:0 0 auto;margin-left:auto;border:0;background:var(--chip);color:var(--sub);
+  font-size:clamp(10px,2.6vw,11px);padding:clamp(2px,1vw,4px) clamp(6px,2.2vw,9px);
+  border-radius:12px;cursor:pointer}
+.popover{position:absolute;top:calc(100% + 8px);right:12px;z-index:50;width:264px;
+  background:#fff;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,.16),0 0 0 1px rgba(0,0,0,.04);
+  padding:12px 14px;opacity:0;transform:translateY(-6px) scale(.98);pointer-events:none;
+  transition:opacity .18s,transform .18s;transform-origin:top right}
+.popover.show{opacity:1;transform:translateY(0) scale(1);pointer-events:auto}
+.popover-arrow{position:absolute;top:-6px;right:26px;width:12px;height:12px;background:#fff;
+  transform:rotate(45deg);box-shadow:-1px -1px 0 rgba(0,0,0,.04)}
+.popover-title{position:relative;z-index:1;font-size:14px;font-weight:600;color:var(--ink);margin-bottom:6px}
+.popover-content{position:relative;z-index:1;font-size:12px;line-height:1.6;color:var(--sub)}
+.popover-content p{margin:0 0 4px}
+.popover-content p:last-child{margin-bottom:0}
+.popover-content b{color:var(--ink)}
+.popover-mask{position:fixed;inset:0;z-index:45;display:none}
+.popover-mask.show{display:block}
+
+/* 榜单区块 —— 紧凑 */
+.board-block{margin-top:clamp(8px,2.4vw,14px)}
+.block-head{display:flex;align-items:center;justify-content:space-between;
+  padding:clamp(3px,1vw,6px) 0 clamp(3px,1vw,6px)}
+.block-title{font-size:clamp(12px,3.2vw,15px);font-weight:700;color:var(--ink);line-height:1.2}
+.block-more{font-size:13px;color:var(--mute)}
+.board-tabs{display:flex;gap:clamp(3px,1.3vw,5px);overflow-x:auto;scrollbar-width:none;
+  padding:0 0 clamp(2px,0.7vw,4px)}
+.board-tabs::-webkit-scrollbar{display:none}
+.btab{flex:0 0 auto;padding:clamp(3px,1vw,5px) clamp(8px,3vw,12px);border-radius:14px;
+  background:var(--chip);font-size:clamp(11px,3vw,13px);color:var(--sub);line-height:1.2}
+.btab.selected{background:#e2e3e5;color:var(--ink);font-weight:600}
+
+/* 稀饭动漫入口条（首页只留入口，内容在详情页） */
+.xifan-entry{display:flex;align-items:center;justify-content:space-between;
+  margin:0 var(--side);padding:12px 14px;border-radius:8px;background:var(--chip);
+  font-size:clamp(12px,3.2vw,15px);color:var(--ink)}
+.xifan-entry span:last-child{color:var(--mute)}
+.block-head a.block-title{color:var(--ink)}
+.source-link{flex:0 0 auto;margin-left:6px;width:26px;height:26px;border-radius:50%;
+  background:var(--chip);color:var(--sub);font-size:16px;line-height:26px;text-align:center}
+.hero-source{flex:0 0 auto;margin-left:8px;font-size:20px;color:#fff;opacity:.9;
+  text-decoration:none;vertical-align:middle}
+
+/* 横滑卡片 —— 自适应尺寸，随视口宽度收紧 */
+.card-scroller{display:flex;gap:clamp(4px,1.6vw,8px);overflow-x:auto;
+  scrollbar-width:none;padding:0 0 2px;
+  margin-left:calc(-1*var(--side));margin-right:calc(-1*var(--side))}
+.card-scroller::before{content:"";flex:0 0 calc(var(--side) - clamp(4px,1.6vw,8px))}
+.card{flex:0 0 clamp(100px,29vw,126px);width:clamp(100px,29vw,126px)}
+.card:last-child{margin-right:calc(-1*clamp(4px,1.6vw,8px))}
+.card-cover{position:relative;width:100%;aspect-ratio:344/480;border-radius:6px;
+  overflow:hidden;background:#eee}
+.card-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.cover-badge{position:absolute;left:0;bottom:0;right:0;padding:1px 4px;
+  font-size:clamp(9px,2.5vw,11px);color:#fff;
+  background:linear-gradient(transparent,rgba(0,0,0,.65));text-align:right}
+.rank-flag{position:absolute;top:0;left:0;width:clamp(19px,6vw,23px);height:clamp(19px,6vw,23px);
+  border-radius:6px 0 6px 0;display:flex;align-items:center;justify-content:center;
+  font-size:clamp(11px,3.2vw,13px);font-weight:700;color:#fff}
+.rank-flag.r1{background:#ffb400}.rank-flag.r2{background:#c5c9d0}.rank-flag.r3{background:#e2a06b}
+.card-title{margin-top:clamp(3px,1vw,5px);font-size:clamp(12px,3.3vw,14px);font-weight:600;
+  line-height:1.3;height:clamp(16px,4.3vw,20px);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.card-sub{margin-top:1px;font-size:clamp(10px,2.7vw,12px);color:var(--mute);line-height:1.2;
+  height:clamp(14px,3.8vw,17px);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.card-views{margin-top:0;font-size:clamp(10px,2.7vw,11px);line-height:1.1;color:var(--pink)}
+.foot-note{text-align:center;color:#c0c3c7;font-size:clamp(10px,2.7vw,12px);padding:10px 0 6px}
+
+/* ============ 详情页 ============ */
+.detail-scroll{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;background:#fff}
+.compact-header{position:absolute;top:28px;left:50%;transform:translateX(-50%);z-index:20;
+  background:rgba(255,255,255,.96);border-radius:8px;padding:5px 16px;font-size:13px;font-weight:600;
+  color:var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.15);opacity:0;pointer-events:none;
+  transition:opacity .18s;white-space:nowrap}
+.compact-header.show{opacity:1}
+.detail-hero{position:relative;flex:none;height:clamp(104px,28vw,134px);overflow:hidden;background:#2b2b33}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:blur(2px)}
+.hero-mask{position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.48),rgba(0,0,0,.28) 55%,rgba(0,0,0,.55))}
+.hero-back{position:absolute;top:12px;left:12px;width:34px;height:34px;border-radius:50%;
+  background:rgba(0,0,0,.28);color:#fff;font-size:30px;line-height:30px;text-align:center;z-index:2}
+.hero-text{position:absolute;left:16px;bottom:12px;z-index:2;color:#fff}
+.hero-text h1{font-size:clamp(20px,6vw,26px);font-weight:800;letter-spacing:1px;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+.hero-text p{margin-top:3px;font-size:clamp(10px,2.8vw,12px);opacity:.92;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.detail-tabs{flex:none;display:flex;align-items:center;height:clamp(34px,9vw,40px);overflow-x:auto;
+  scrollbar-width:none;border-bottom:1px solid var(--line);background:#fff;padding:0 6px}
+.dtab{position:relative;flex:0 0 auto;padding:0 14px;height:100%;display:flex;align-items:center;
+  font-size:clamp(13px,3.6vw,15px);color:var(--sub);white-space:nowrap}
+.dtab.selected{color:var(--ink);font-weight:700}
+.dtab.selected span{position:absolute;left:14px;right:14px;bottom:6px;height:3px;border-radius:2px;background:var(--ink)}
+.detail-list{background:#fff}
+.detail-item{display:flex;gap:9px;padding:11px 11px;border-bottom:1px solid #f0f1f2}
+.di-cover{position:relative;flex:0 0 clamp(70px,20vw,88px);width:clamp(70px,20vw,88px);height:clamp(96px,27vw,120px);border-radius:5px;overflow:hidden;background:#eee}
+.di-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.di-rank{position:absolute;top:0;left:0;width:clamp(20px,6vw,24px);height:clamp(20px,6vw,24px);border-radius:5px 0 5px 0;
+  display:flex;align-items:center;justify-content:center;font-size:clamp(11px,3vw,13px);font-weight:700;color:#fff;
+  background:linear-gradient(135deg,#ffcf5b,#ff9b2f)}
+.di-rank.r1{background:linear-gradient(135deg,#ffd76b,#ff9d1e)}
+.di-rank.r2{background:linear-gradient(135deg,#dfe3ea,#aab1bd)}
+.di-rank.r3{background:linear-gradient(135deg,#f0bd93,#d98a52)}
+.di-main{flex:1;min-width:0;display:flex;flex-direction:column}
+.di-title{font-size:clamp(13px,3.7vw,15px);font-weight:600;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.di-meta{display:flex;align-items:center;gap:5px;margin-top:4px;flex-wrap:nowrap;overflow:hidden}
+.di-score{color:#ff7f24;font-size:clamp(12px,3.4vw,14px);font-weight:700;flex:0 0 auto}
+.di-tag{background:var(--chip);color:var(--sub);font-size:clamp(10px,2.7vw,11px);padding:1px 5px;border-radius:3px;white-space:nowrap;flex:0 0 auto}
+.di-desc{margin-top:4px;font-size:clamp(11px,3vw,12px);color:var(--sub);line-height:1.3;height:clamp(14px,3.9vw,16px);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.di-actions{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:8px}
+.di-play{border:1px solid var(--line);background:#fff;border-radius:5px;padding:3px 10px;font-size:clamp(11px,3vw,12px);
+  color:var(--ink);display:flex;align-items:center;gap:5px;cursor:pointer}
+.di-play b{font-size:11px}
+.di-fav{font-size:18px;color:#333;cursor:pointer;padding:0 4px}
+.detail-foot{text-align:center;color:#c0c3c7;font-size:12px;padding:20px 0 24px}
+
+@media (min-width:520px){
+  #app{box-shadow:0 0 40px rgba(0,0,0,.12)}
+}
+
+/* ============ 电脑/平板宽屏自适应 ============ */
+@media (min-width:768px){
+  #app{max-width:min(92vw,1280px);height:calc(100dvh - 32px);margin:16px auto;border-radius:12px}
+  /* 卡片随容器放大，但设上限避免过大 */
+  .card{flex-basis:clamp(130px,13vw,190px);width:clamp(130px,13vw,190px)}
+  .card-cover{height:clamp(180px,18vw,260px)}
+  .card-title{font-size:clamp(15px,1.4vw,19px);height:clamp(40px,3.8vw,50px)}
+  .card-sub{font-size:clamp(12px,1.1vw,15px);height:clamp(30px,2.8vw,38px)}
+  .card-views{font-size:clamp(12px,1.1vw,15px)}
+  .cover-badge{font-size:clamp(12px,1.1vw,15px)}
+  .rank-flag{width:clamp(28px,2.6vw,36px);height:clamp(28px,2.6vw,36px);font-size:clamp(15px,1.4vw,19px)}
+  .block-title{font-size:clamp(20px,2vw,26px)}
+  .btab{font-size:clamp(14px,1.3vw,17px);padding:clamp(6px,0.7vw,10px) clamp(14px,1.5vw,20px)}
+  .season-label,.season-chip,.info-btn{font-size:clamp(13px,1.2vw,16px)}
+  .season-chip{padding:clamp(5px,0.6vw,8px) clamp(12px,1.2vw,16px)}
+  .home-scroll{--side:clamp(20px,3vw,40px);padding:0 var(--side) 16px}
+  .board-block{margin-top:clamp(12px,1.4vw,20px)}
+  .footer,.foot-note{font-size:clamp(12px,1.1vw,15px)}
+
+  /* 详情：封面与文字放大 */
+  .detail-hero{height:clamp(180px,20vw,280px)}
+  .hero-text{left:clamp(20px,2.5vw,36px);bottom:clamp(20px,2.5vw,36px)}
+  .hero-text h1{font-size:clamp(30px,3.2vw,44px)}
+  .hero-text p{font-size:clamp(14px,1.3vw,18px)}
+  .detail-tabs{height:clamp(46px,5vw,60px)}
+  .dtab{font-size:clamp(16px,1.5vw,20px);padding:0 clamp(18px,2vw,28px)}
+  .detail-item{gap:clamp(14px,1.6vw,22px);padding:clamp(14px,1.5vw,20px) clamp(16px,2vw,28px)}
+  .di-cover{flex-basis:clamp(110px,11vw,160px);width:clamp(110px,11vw,160px);height:clamp(150px,15vw,215px)}
+  .di-title{font-size:clamp(18px,1.7vw,24px)}
+  .di-score{font-size:clamp(16px,1.5vw,21px)}
+  .di-tag{font-size:clamp(13px,1.2vw,16px)}
+  .di-desc{font-size:clamp(14px,1.3vw,18px);height:auto}
+  .di-play{font-size:clamp(13px,1.2vw,16px);padding:clamp(5px,0.6vw,9px) clamp(14px,1.5vw,20px)}
+  .compact-header{font-size:clamp(14px,1.3vw,18px);top:clamp(16px,2vw,28px)}
+
+  /* 大屏：单个横滑改为多列网格，充分利用宽度 */
+  .card-scroller{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(130px,13vw,190px),1fr));
+    gap:clamp(12px,1.4vw,20px)}
+  .card{width:auto;flex:none;scroll-snap-align:none}
+  .card-cover{width:100%}
+}

@@ -1,0 +1,20 @@
+{
+  "ups": [
+    { "mid": 690151424, "name": "KAYGEZ" }
+  ],
+  "bili": {
+    "api": "https://api.bilibili.com/x/space/wbi/arc/search",
+    "page_size": 30,
+    "max_pages": 10,
+    "match_recent": 60,
+    "request_gap": 1.2
+  },
+  "bgm": {
+    "api": "https://bgmapi.anibt.net/v0",
+    "image_host": "bgmimg.anibt.net",
+    "match_min_score": 0.62,
+    "season_limit": 60,
+    "request_gap": 0.8
+  },
+  "localize_covers": true
+}

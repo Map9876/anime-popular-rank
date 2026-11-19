@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>B站UP主番剧排行榜</title>
+<link rel="stylesheet" href="style.css?v=20261201a">
+</head>
+<body>
+<div id="app">
+
+  <!-- ========== 首页：UP 主番剧排行榜 ========== -->
+  <section id="view-home" class="view active">
+    <div class="home-scroll">
+
+      <!-- 季度筛选 -->
+      <div class="season-row">
+        <span class="season-label">季度</span>
+        <div id="season-chips" class="season-chips"></div>
+        <button class="info-btn" id="rate-info" type="button">统计口径</button>
+        <div class="popover" id="info-popover" role="dialog" aria-label="播放量统计口径">
+          <span class="popover-arrow"></span>
+          <div class="popover-title">播放量统计口径</div>
+          <div class="popover-content">
+            <p><b>当前季度</b>：累计播放量 ÷ 首集投稿天数，不做贝叶斯平均。</p>
+            <p><b>过往季度</b>：对播放速率做贝叶斯平滑，避免增长慢导致失真。</p>
+            <p>重复投稿（含合集、重投）全部累加；已删除稿件仍计入缓存并累加。</p>
+          </div>
+        </div>
+        <div class="popover-mask" id="popover-mask"></div>
+      </div>
+
+      <section class="board-block" data-board="up">
+        <div class="block-head">
+          <div class="block-title">B站UP主番剧排行榜</div>
+        </div>
+        <div class="board-tabs" id="home-board-tabs"></div>
+        <div class="card-scroller" id="cards-hot"></div>
+      </section>
+
+      <section class="board-block" data-board="xifan">
+        <div class="block-head">
+          <a href="#/rank/xifan_danmaku" class="block-title">稀饭动漫</a>
+          <a href="https://next.xifanacg.com/rankings" target="_blank" rel="noopener"
+             class="source-link" title="前往稀饭动漫原网站" aria-label="前往稀饭动漫原网站">&#8599;</a>
+        </div>
+        <a href="#/rank/xifan_danmaku" class="xifan-entry">
+          <span>弹幕榜 · 周热榜 · 新番</span>
+          <span>查看完整榜单 &rsaquo;</span>
+        </a>
+      </section>
+
+      <section class="board-block" data-board="total">
+        <div class="block-head"><div class="block-title">累计播放榜</div></div>
+        <div class="card-scroller" id="cards-total"></div>
+      </section>
+
+      <section class="board-block" data-board="season">
+        <div class="block-head">
+          <div class="block-title">当季新番</div>
+        </div>
+        <div class="card-scroller" id="cards-season"></div>
+      </section>
+
+      <div class="foot-note">数据每 6 小时更新 · 来源 B站 / bgm.tv</div>
+    </div>
+  </section>
+
+  <!-- ========== 详情页：热门榜单 ========== -->
+  <section id="view-detail" class="view">
+    <div class="compact-header" id="compact-header">UP主番剧榜</div>
+    <div class="detail-scroll" id="detail-scroll">
+    <div class="detail-hero" id="detail-hero">
+      <img class="hero-bg" id="hero-bg" alt="">
+      <div class="hero-mask"></div>
+      <a href="#" class="hero-back" data-back aria-label="返回">&#8249;</a>
+      <div class="hero-text">
+        <h1><span id="hero-title">B站UP主番剧排行榜</span><a id="hero-source-link" class="hero-source" href="#" target="_blank" rel="noopener" title="前往原网站" aria-label="前往原网站" style="display:none">&#8599;</a></h1>
+        <p><span id="hero-desc">按累计播放量统计</span>，<span id="hero-period">每 6 小时</span>更新一次</p>
+      </div>
+    </div>
+    <div class="detail-tabs" id="detail-tabs"></div>
+    <div class="detail-list" id="detail-list"></div>
+    </div>
+  </section>
+
+</div>
+<script src="app.js"></script>
+</body>
+</html>

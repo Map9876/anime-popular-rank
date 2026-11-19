@@ -1,0 +1,55 @@
+name: Update Anime Rankings
+
+on:
+  schedule:
+    # 每 6 小时更新一次（UTC）。B站播放量、bgm 当季榜单都是定时快照。
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ranking-update
+  cancel-in-progress: false
+
+jobs:
+  update-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Fetch rankings
+        run: python3 scripts/fetch.py
+
+      - name: Commit data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data assets
+          if git diff --cached --quiet; then
+            echo "No data changes"
+          else
+            git commit -m "chore: update ranking data [skip ci]"
+            git push
+          fi
+
+      - name: Add .nojekyll
+        run: touch .nojekyll
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: .
+          publish_branch: gh-pages
+          exclude_assets: '.git,.github,scripts,data/cache,data/history'
+          commit_message: "deploy: static ranking pages [skip ci]"
