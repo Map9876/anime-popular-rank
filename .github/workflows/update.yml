@@ -28,6 +28,8 @@ jobs:
           python-version: '3.11'
 
       - name: Fetch rankings
+        # 抓取失败（如上游 API 在 CI 环境 404/风控）时保留仓库已有 data.json，不阻断部署
+        continue-on-error: true
         run: python3 scripts/fetch.py
 
       - name: Commit data

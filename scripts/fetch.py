@@ -391,7 +391,7 @@ class BgmClient:
                 "nsfw": False,
             }
             data = self.call(f"/v0/search/subjects?limit=50&offset={offset}", body,
-                             key=f"bgm-season-{air_from}-{air_to}-{offset}")
+                             key=f"bgm-season-{air_from}-{air_to}-{offset}") or {}
             rows = data.get("data") or []
             out.extend(rows)
             total = data.get("total") or 0
